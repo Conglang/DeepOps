@@ -7,4 +7,7 @@ Code challenge for [How to Make a Prediction - Intro to Deep Learning #1](https:
 
 ## Op2_make_3layer_neural_network
 Code challenge for [How to Make a Neural Network - Intro to Deep Learning #2](https://www.youtube.com/watch?v=p69khggr1Jo&list=PL2-dafEMk2A7YdKv4XfKpfbTH5z6rEEj3&index=3).
+Ref: ludobouan's [pure-numpy-feedfowardNN](https://github.com/ludobouan/pure-numpy-feedfowardNN).
 > The challenge for this video is to create a 3 layer feedforward neural network using only numpy as your dependency.
+
+## 
