@@ -7,7 +7,12 @@ Code challenge for [How to Make a Prediction - Intro to Deep Learning #1](https:
 
 ## Op2_make_3layer_neural_network
 Code challenge for [How to Make a Neural Network - Intro to Deep Learning #2](https://www.youtube.com/watch?v=p69khggr1Jo&list=PL2-dafEMk2A7YdKv4XfKpfbTH5z6rEEj3&index=3).
+
 Ref: ludobouan's [pure-numpy-feedfowardNN](https://github.com/ludobouan/pure-numpy-feedfowardNN).
 > The challenge for this video is to create a 3 layer feedforward neural network using only numpy as your dependency.
 
-## 
+## Op3_sentiment_analysis_of_game_reviews
+Code challenge for [How to Do Sentiment Analysis - Intro to Deep Learning #3](https://www.youtube.com/watch?v=si8zZHkufRY&list=PL2-dafEMk2A7YdKv4XfKpfbTH5z6rEEj3&index=5).
+
+Ref: jovianlin's [siraj-intro-to-DL-03](https://github.com/jovianlin/siraj-intro-to-DL-03).
+> The challenge for this video is to train a model on [this](https://www.kaggle.com/egrinstein/20-years-of-games) dataset of video game reviews from IGN.com. Then, given some new video game title it should be able to classify it. You can use pandas to parse this dataset. Right now each review has a label that's either Amazing, Great, Good, Mediocre, painful, or awful. These are the emotions. Using the existing labels is extra credit. The baseline is that you can just convert the labels so that there are only 2 emotions (positive or negative). Ideally you can use an RNN via TFLearn like the one in this example, but I'll accept other types of ML models as well.
