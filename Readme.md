@@ -16,3 +16,10 @@ Code challenge for [How to Do Sentiment Analysis - Intro to Deep Learning #3](ht
 
 Ref: jovianlin's [siraj-intro-to-DL-03](https://github.com/jovianlin/siraj-intro-to-DL-03).
 > The challenge for this video is to train a model on [this](https://www.kaggle.com/egrinstein/20-years-of-games) dataset of video game reviews from IGN.com. Then, given some new video game title it should be able to classify it. You can use pandas to parse this dataset. Right now each review has a label that's either Amazing, Great, Good, Mediocre, painful, or awful. These are the emotions. Using the existing labels is extra credit. The baseline is that you can just convert the labels so that there are only 2 emotions (positive or negative). Ideally you can use an RNN via TFLearn like the one in this example, but I'll accept other types of ML models as well.
+
+## Op4_predict_magnitude_of_earthquake (unfinished)
+Code Challenge for [How to Do Mathematics Easily](https://www.youtube.com/watch?v=N4gDikiec8E&list=PL2-dafEMk2A7YdKv4XfKpfbTH5z6rEEj3&index=7).
+
+Ref: https://www.kaggle.com/artimous/d/usgs/earthquake-database/visualizing-earthquakes-via-animations
+
+> The challenge for this video is to build a neural network to predict the magnitude of an Earthquake given the date, time, Latitude, and Longitude as features. [This](https://www.kaggle.com/usgs/earthquake-database) is the dataset. Optimize at least 1 hyperparameter using Random Search. See [this](http://scikit-learn.org/stable/auto_examples/model_selection/randomized_search.html) example for more information.
