@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+        <meta charset="utf-8" />
+        <link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+        
+    </head>
+    <body>
+        {% if isdebug %}
+        <div><p>{{ debugmsg }}</p></div>
+        {% endif %}
+        <script src="/static/js/common.js"></script>
+        {% block content %}{% endblock %}
+    </body>
+</html>
