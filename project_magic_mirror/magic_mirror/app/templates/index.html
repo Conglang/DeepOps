@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <video autoplay></video>
+    <video autoplay style="height:360px;" poster="/static/image/poster1.png"></video>
     <canvas></canvas>
-    <p>hh</p>
 
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="/static/js/main.js"></script>
+    <script src="/static/js/audio.js"></script>
+
+    <audio id="currentAudio" src="" autoplay></audio>
 {% endblock %}
