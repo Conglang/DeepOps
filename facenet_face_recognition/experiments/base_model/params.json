@@ -1,0 +1,20 @@
+{
+    "learning_rate": 1e-3,
+    "batch_size": 64,
+    "num_epochs": 20,
+
+    "margin": 0.5,
+    "embedding_size": 128,
+    "triplet_strategy": "batch_all",
+    "squared": false,
+    "dropout_keep_prob":0.75,
+
+    "image_size": 250,
+    "train_size": 50000,
+    "test_size": 10000,
+
+    "num_parallel_calls": 4,
+    "save_summary_steps": 50,
+
+    "use_random_flip": true
+}
