@@ -12,12 +12,15 @@ var constraints = {
 };
 
 var sampleRate = 44100;
-var recording = true;
+var recording = false;
 var photos = [];
-var photoNum = 5;
+var photoNum = 1;
 var snapshotTimer;
 var audioStream;
 var videoStream;
+
+var chunkLen = 4096;
+var chunkCount;
 
 var ws = new WebSocket('ws://127.0.0.1:5000/websocket');
 
@@ -32,15 +35,42 @@ ws.onopen = function(evt) {
     navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
 }
 
+// function splitArrayIntoChunks(arr, chunkCount){
+//     var chunkList = [];
+//     var chunkLen = Math.ceil(arr.length / chunkCount);
+//     for(var i = 0; i < chunkCount; i++){
+//         var start = i * chunkLen;
+//         var end = Math.min((i + 1) * chunkLen, arr.length);
+//         console.log("chunk start end:", start, end);
+//         chunkList.push(arr.subarray(start, end).buffer);
+//     }
+//     return chunkList
+// }
+
+function splitArrayIntoChunks(arr, chunkLen){
+    var chunkList = [];
+    chunkCount = Math.ceil(arr.length / chunkLen);
+    console.log("chunkCount: ", chunkCount);
+    for(var i = 0; i < chunkCount; i++){
+        var start = i * chunkLen;
+        var end = Math.min((i + 1) * chunkLen, arr.length);
+        chunkList.push(arr.buffer.slice(start, end));
+    }
+    return chunkList
+}
+
 function flatten_image(imgData) {
     console.log(canvas.width * canvas.height * 3);
-    var buf = new Int16Array(canvas.width * canvas.height * 3);
+    var buf = new Uint8Array(canvas.width * canvas.height * 3);
     var cur = 0;
     for (var i = 0; i < imgData.data.length; i += 4)
     {
-        buf[cur++] = imgData.data[i+0];
-        buf[cur++] = imgData.data[i+1];
-        buf[cur++] = imgData.data[i+2];
+        buf[cur] = Math.max(Math.min(imgData.data[i+0], 255), 0);
+        cur = cur + 1;
+        buf[cur] = Math.max(Math.min(imgData.data[i+1], 255), 0);
+        cur = cur + 1;
+        buf[cur] = Math.max(Math.min(imgData.data[i+2], 255), 0);
+        cur = cur + 1;
     }
     return buf;
 }
@@ -72,14 +102,28 @@ function recorderProcess(e) {
     }
 }
 
+function wait(ms){
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+   }
+ }
+
 function takeEnoughPhotosAndGoOn() {
     if (photos.length < photoNum) {
+        recording = false
         // take photos and send
         console.log('take image ', photos.length, photoNum);
         var img = takeSnapshot()
+        var chunks = splitArrayIntoChunks(img, chunkLen);
+        chunks.forEach(function(chunk) {
+            console.log("chunk:", chunk);
+            ws.send(chunk);
+        });
         photos.push(img)
-        ws.send(img)
     } else {
+        recording = true
         console.log('connect audio');
         clearInterval(snapshotTimer);
         // audio stream
