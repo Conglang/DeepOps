@@ -1,17 +1,21 @@
 import os
 from game.utils import *
-from threading import Timer
+from threading import Timer, Thread
 import time
 from scipy.io.wavfile import write
 import numpy as np
+from queue import Queue
+from trigger_word_detection import triggerword
 
 class AudioLogic():
     def __init__(self, game_state_list, player_id_list, audio_file_list):
+        # game related
         self.game_state_list = game_state_list
         self.player_id_list = player_id_list
         self.audio_file_list = audio_file_list
         self.audio_file_list[0] = ""
         
+        # for record
         self.sound_buffer = np.array([], np.dtype('i2'))
         self.sound_flush = False
 
@@ -20,13 +24,30 @@ class AudioLogic():
         self.to_play = Timer(5, self.timer_play)
         self.to_shutdown = Timer(5, self.timer_shutdown)
 
+        # prepare model
+        self.twd_client = triggerword.TWDetection()
+
+        # audio queue
+        self.audio_queue = Queue()
+
+        # start detection
+        self.audio_detect_thread = Thread(target = self.trigger_listening)
+        self.start_detection()
+    
+    def start_detection(self):
+        self.audio_detect_thread.start()
+
     def set_game_state(self, state):
         if self.game_state_list[0] != state:
             self.game_state_list[0] = state
             print("change game state to: ", state)
 
-    def trigger_listening(self, audio_as_int_array):
-        pass
+    def trigger_listening(self):
+        while self.audio_queue.not_empty:
+            audio_data = self.audio_queue.get()
+            is_triggerred = self.twd_client.detect_trigger_word(audio_data)
+            if is_triggerred:
+                on_triggered()
 
     def timer_listen(self):
         self.set_game_state(STATE_LISTEN)
@@ -40,6 +61,7 @@ class AudioLogic():
         self.set_game_state(STATE_PLAY)
 
     def on_triggered(self):
+        print("triggerred")
         self.to_listen.cancel()
         self.to_shutdown.cancel()
         self.to_play.cancel()

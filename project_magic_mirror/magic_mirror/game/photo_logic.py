@@ -38,7 +38,7 @@ class PhotoLogic():
 
     def save_and_resize(self, width, height, photo):
         # write to temporary folder
-        photo_path = os.path.join(RESOURCE_IMAGE_PATH, str(time.time()))
+        photo_path = os.path.join(RESOURCE_TEMP_PATH, str(time.time()))
         photo = photo.reshape([height, width, 3])
         imageio.imsave(photo_path + ".jpg", photo)
         # resize image

@@ -3,6 +3,7 @@ import numpy as np
 import threading
 from game import utils, gameplay
 import uwsgidecorators
+import time
 
 
 from app import app
@@ -56,6 +57,11 @@ def index():
 
 @websocket.route('/websocket')
 def user_messages(ws):
+    global game_client
+    while not game_client:
+        print("none none none none!!!")
+        time.sleep(5)
+    game_client.reset_states()
     while True:
         msg = ws.receive()
         game_client.process_msg(msg)
@@ -76,4 +82,7 @@ def getFileName():
     #     if g.game_client is None:
     #         return ""
     #     return g.game_client.get_audio()
+    global game_client
+    if game_client is None:
+        return ""
     return game_client.get_audio()

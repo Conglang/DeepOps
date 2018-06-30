@@ -10,6 +10,8 @@ from td_utils import *
 from constants import *
 import time
 
+Ty = TIMESTEPS_NUM_Y
+
 def get_random_time_segment(segment_ms):
     """
     Gets a random time segment of duration segment_ms in a 10,000 ms audio clip.

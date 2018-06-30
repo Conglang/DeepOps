@@ -1,10 +1,9 @@
-from keras.callbacks import ModelCheckpoint
-from keras.models import Model, load_model, Sequential
-from keras.layers import Dense, Activation, Dropout, Input, Masking, TimeDistributed, LSTM, Conv1D
-from keras.layers import GRU, Bidirectional, BatchNormalization, Reshape
-from keras.optimizers import Adam
+from constants import *
 
 def model(input_shape):
+    from keras.models import Model, Sequential
+    from keras.layers import Dense, Activation, Dropout, Input, Masking, TimeDistributed, LSTM, Conv1D
+    from keras.layers import GRU, Bidirectional, BatchNormalization, Reshape
     """
     Function creating the model's graph in Keras.
     
@@ -43,11 +42,13 @@ def model(input_shape):
     return model
 
 def load_exist_model(model_dir):
+    from keras.models import load_model
+    print("load exist audio model --------------------")
     model = load_model(model_dir)
     return model
 
 def build_model():
-    model = model(input_shape = (Tx, n_freq))
+    model = model(input_shape = (TIMESTEPS_NUM_X, FREQUENCY_NUM))
     model.summary()
     return model
 

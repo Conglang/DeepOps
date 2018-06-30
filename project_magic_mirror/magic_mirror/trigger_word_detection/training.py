@@ -56,10 +56,10 @@ def chime_on_activate(filename, predictions, threshold):
         
     audio_clip.export("chime_output.wav", format='wav')
 
-if __name__ == '__main__':
-    training_and_evaluate()
-    preprocess_audio(your_filename)
-    chime_threshold = 0.5
-    prediction = detect_triggerword(your_filename)
-    chime_on_activate(your_filename, prediction, chime_threshold)
-    IPython.display.Audio("./chime_output.wav")
+# if __name__ == '__main__':
+#     training_and_evaluate()
+#     preprocess_audio(your_filename)
+#     chime_threshold = 0.5
+#     prediction = detect_triggerword(your_filename)
+#     chime_on_activate(your_filename, prediction, chime_threshold)
+#     IPython.display.Audio("./chime_output.wav")

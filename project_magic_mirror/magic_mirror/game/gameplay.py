@@ -8,7 +8,7 @@ from game.utils import *
 import random
 from database import dbop
 
-from threading import Thread, Semaphore
+from threading import Thread
 import functools
 import threading
 
@@ -36,15 +36,6 @@ class Singleton(type):
 
 # control game state
 class GamePlay(metaclass=Singleton):
-    semaphore = Semaphore()
-    def __getitem__(*args, **kwargs):
-        with semaphore:
-            super().__getitem__(*args, **kwargs)
-
-    def __setitem__(*args, **kwargs):
-        with semaphore:
-            super().__setitem__(*args, **kwargs)
-
     def __init__(self):
         super(GamePlay, self).__init__()
         self.daemon = True
@@ -54,12 +45,19 @@ class GamePlay(metaclass=Singleton):
 
         print("a game play instance. -----------------------")
         # global variables
-        self.game_state = STATE_SHUTDOWN
-        self.player_id = INVALID_USER
-        self.audio_file = ""
+        self.game_state_list = [STATE_SHUTDOWN]
+        self.player_id_list = [INVALID_USER]
+        self.audio_file_list = [""]
 
 
         # process msg
+        self.reset_states()
+
+        # instances
+        self.photo_logic = PhotoLogic(self.game_state_list, self.player_id_list)
+        self.audio_logic = AudioLogic(self.game_state_list, self.player_id_list, self.audio_file_list) # todo
+    
+    def reset_states(self):
         self.pre_msg_count = 0
         self.photos = []
         self.sample_rate = 0
@@ -69,28 +67,23 @@ class GamePlay(metaclass=Singleton):
         self.photo_buffer = b""
         self.photo_index = 0
 
-        # instances
-        self.photo_logic = PhotoLogic([self.game_state], [self.player_id])
-        self.audio_logic = AudioLogic([self.game_state], [self.player_id], [self.audio_file]) # todo
-
-    # def set_ws(self, ws):
-    #     if self.ws is None:
-    #         self.ws = ws
+        self.audio_buffer = np.zeros(FEED_SAMPLES, dtype='int16')
 
     def clear_player_id(self):
-        if self.player_id != INVALID_USER:
-            self.player_id = INVALID_USER
+        if self.player_id_list[0] != INVALID_USER:
+            self.player_id_list[0] = INVALID_USER
     
     def get_audio(self):
-        return self.audio_file
+        return self.audio_file_list[0]
 
     # main loop
     def main_loop(self, sample_rate, audio_as_int_array):
-        if self.game_state in [STATE_LISTEN, STATE_PLAY, STATE_RECORD]:
+        print(self.game_state_list[0])
+        if self.game_state_list[0] in [STATE_LISTEN, STATE_PLAY, STATE_RECORD]:
             self.trigger_listening(audio_as_int_array)
-        if self.game_state == STATE_RECORD:
+        if self.game_state_list[0] == STATE_RECORD:
             self.audio_logic.save_to_file(sample_rate, audio_as_int_array)
-        if self.game_state == STATE_PLAY:
+        if self.game_state_list[0] == STATE_PLAY:
             self.audio_logic.start_play_audio()
 
     # face recognition
@@ -99,12 +92,14 @@ class GamePlay(metaclass=Singleton):
 
     # trigger word detection
     def trigger_listening(self, audio_as_int_array):
-        print("trigger listening")
-        pass
+        self.audio_buffer = np.append(self.audio_buffer, audio_as_int_array)
+        if len(self.audio_buffer) > FEED_SAMPLES:
+            self.audio_buffer = self.audio_buffer[-FEED_SAMPLES:]
+            self.audio_logic.audio_queue.put(self.audio_buffer)
         
     def process_msg(self, msg):
-        if msg is None or msg == b"":
-            print("empty msg------")
+        if msg is None:
+            print("empty msg------", msg)
             return
 
         if self.pre_msg_count < 4:
@@ -134,9 +129,5 @@ class GamePlay(metaclass=Singleton):
         else:
             # audio
             audio_as_int_array = np.frombuffer(msg, 'i2')
+            # print(audio_as_int_array)
             self.main_loop(self.sample_rate, audio_as_int_array)
-                
-    # def run(self):
-    #     if self.ws is None:
-    #         return
-    #     self.process_msg(self.ws)

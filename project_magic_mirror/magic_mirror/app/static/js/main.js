@@ -35,18 +35,6 @@ ws.onopen = function(evt) {
     navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
 }
 
-// function splitArrayIntoChunks(arr, chunkCount){
-//     var chunkList = [];
-//     var chunkLen = Math.ceil(arr.length / chunkCount);
-//     for(var i = 0; i < chunkCount; i++){
-//         var start = i * chunkLen;
-//         var end = Math.min((i + 1) * chunkLen, arr.length);
-//         console.log("chunk start end:", start, end);
-//         chunkList.push(arr.subarray(start, end).buffer);
-//     }
-//     return chunkList
-// }
-
 function splitArrayIntoChunks(arr, chunkLen){
     var chunkList = [];
     chunkCount = Math.ceil(arr.length / chunkLen);
@@ -82,7 +70,7 @@ function takeSnapshot() {
     var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     
     var img = flatten_image(imgData)
-    console.log(img);
+    // console.log(img);
     return img;
 }
 
@@ -98,7 +86,9 @@ function convertFloat32ToInt16(buffer) {
 function recorderProcess(e) {
     if (recording) {
         var left = e.inputBuffer.getChannelData(0);
-        ws.send(convertFloat32ToInt16(left));
+        var content = convertFloat32ToInt16(left);
+        console.log("audio send ----", content.byteLength);
+        ws.send(content);
     }
 }
 
