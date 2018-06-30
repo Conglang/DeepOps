@@ -4,11 +4,14 @@ import json
 import numpy as np
 
 def add_user(enc):
-    encoding_str = json.dumps(enc.tolist())
-    u = models.User(encoding = encoding_str)
-    db.session.add(u)
-    db.session.commit()
-    return u.id
+    try:
+        encoding_str = json.dumps(enc.tolist())
+        u = models.User(encoding = encoding_str)
+        db.session.add(u)
+        db.session.commit()
+        return u.id
+    except:
+        db.session.rollback()
 
 def get_user_encoding(id):
     u = models.User.query.get(id)

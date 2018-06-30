@@ -1,3 +1,4 @@
+import numpy as np
 from trigger_word_detection.td_utils import get_spectrogram
 from constants import *
 
@@ -7,8 +8,10 @@ import os
 
 class TWDetection():
     def __init__(self):
+        import tensorflow as tf
         model_dir = os.path.join(os.path.dirname(__file__), "./data/model/tr_model.h5")
         self.model = load_exist_model(model_dir)
+        self.graph = tf.get_default_graph()
 
     def detect_triggerword_spectrum(self, x):
         """
@@ -22,10 +25,12 @@ class TWDetection():
         predictions -- flattened numpy array to shape (number of output time steps)
         """
         # the spectogram outputs  and we want (Tx, freqs) to input into the model
-        x  = x.swapaxes(0,1)
-        x = np.expand_dims(x, axis=0)
-        predictions = self.model.predict(x)
-        return predictions.reshape(-1)
+        graph = self.graph
+        with graph.as_default():
+            x  = x.swapaxes(0,1)
+            x = np.expand_dims(x, axis=0)
+            predictions = self.model.predict(x)
+            return predictions.reshape(-1)
 
     def has_new_triggerword(self, predictions, chunk_duration, feed_duration, threshold=0.5):
         """
@@ -46,6 +51,7 @@ class TWDetection():
         chunk_predictions_samples = int(len(predictions) * CHUNK_DURATION / FEED_DURATION)
         chunk_predictions = predictions[-chunk_predictions_samples:]
         level = chunk_predictions[0]
+        # print(chunk_predictions)
         for pred in chunk_predictions:
             if pred > level:
                 return True

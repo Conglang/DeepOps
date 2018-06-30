@@ -15,9 +15,10 @@ class PhotoLogic():
         self.player_id_list[0] = INVALID_USER
         self.fr_who = whoisit.FRWhoIsIt()
 
-    def set_game_state(self, state):
-        self.game_state_list[0] = state
-        print("change game state to: ", state)
+    def set_game_state(self, state, desc):
+        if self.game_state_list[0] != state:
+            self.game_state_list[0] = state
+            print("change game state to: ", state, "by ", desc)
 
     def resize_screenshot(self, source_path, dest_path):
         image = Image.open(source_path)
@@ -53,11 +54,14 @@ class PhotoLogic():
         os.rename(photo_path, dest_path)
 
     def face_recognition(self, width, height, photo, isfinish):
+        if isfinish:
+            self.set_game_state(STATE_PLAY, "face_recognition")
+
         print(len(photo))
         assert len(photo) == width * height * 3
 
         if photo is None:
-            self.set_game_state(STATE_SHUTDOWN)
+            self.set_game_state(STATE_SHUTDOWN, "face_recognition")
             print("empty")
             return
 
@@ -72,7 +76,6 @@ class PhotoLogic():
         all_users = dbop.get_all_user()
 
         min_dist, id, img_encoding = self.fr_who.who_is_it(photo_path, all_users)
-
         if id is None:
             # add new user
             id = dbop.add_user(img_encoding)
@@ -83,5 +86,4 @@ class PhotoLogic():
         self.move_to_user_folder(photo_path, id)
         print("player_id", self.player_id_list[0])
 
-        if isfinish:
-            self.set_game_state(STATE_LISTEN)
+        

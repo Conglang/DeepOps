@@ -22,7 +22,6 @@ class FRWhoIsIt():
         img = img1[...,::-1]
         img = np.around(np.transpose(img, (2,0,1))/255.0, decimals=12)
         x_train = np.array([img])
-        print("step 3")
         embedding = model.predict_on_batch(x_train)
         print("embedding", embedding)
         self.lock.release()
@@ -84,28 +83,29 @@ class FRWhoIsIt():
         """
 
         graph = self.graph
-        # with graph.as_default():
-        ## Step 1: Compute the target "encoding" for the image. Use img_to_encoding() see example above. ## (≈ 1 line)
-        encoding = self.img_to_encoding(image_path)
-        
-        ## Step 2: Find the closest encoding ##
-        
-        # Initialize "min_dist" to a large value, say 100 (≈1 line)
-        min_dist = 100
-        identity = None
-        # Loop over the database dictionary's names and encodings.
-        for (id, db_enc) in database.items():
+        with graph.as_default():
+            ## Step 1: Compute the target "encoding" for the image. Use img_to_encoding() see example above. ## (≈ 1 line)
+            encoding = self.img_to_encoding(image_path)
             
-            # Compute L2 distance between the target "encoding" and the current "emb" from the database. (≈ 1 line)
-            dist = np.linalg.norm(encoding - db_enc)
+            ## Step 2: Find the closest encoding ##
+            
+            # Initialize "min_dist" to a large value, say 100 (≈1 line)
+            min_dist = 100
+            identity = None
+            # Loop over the database dictionary's names and encodings.
+            for (id, db_enc) in database.items():
+                
+                # Compute L2 distance between the target "encoding" and the current "emb" from the database. (≈ 1 line)
+                dist = np.linalg.norm(encoding - db_enc)
 
-            # If this distance is less than the min_dist, then set min_dist to dist, and identity to name. (≈ 3 lines)
-            if dist < min_dist:
-                min_dist = dist
-                identity = id
-        
-        if min_dist > 0.7:
-            print("Not in the database.")
-        else:
-            print ("it's " + str(identity) + ", the distance is " + str(min_dist))
-        return min_dist, identity, encoding
+                # If this distance is less than the min_dist, then set min_dist to dist, and identity to name. (≈ 3 lines)
+                if dist < min_dist:
+                    min_dist = dist
+                    identity = id
+            
+            if min_dist > 0.7:
+                print("Not in the database.", identity)
+                identity = None
+            else:
+                print ("it's " + str(identity) + ", the distance is " + str(min_dist))
+            return min_dist, identity, encoding

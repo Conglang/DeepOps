@@ -68,19 +68,23 @@ class GamePlay(metaclass=Singleton):
         self.photo_index = 0
 
         self.audio_buffer = np.zeros(FEED_SAMPLES, dtype='int16')
+        self.audio_chunk_buffer = np.zeros(0, dtype='int16')
 
     def clear_player_id(self):
         if self.player_id_list[0] != INVALID_USER:
             self.player_id_list[0] = INVALID_USER
     
     def get_audio(self):
+        # print("current audio:", self.audio_file_list[0])
         return self.audio_file_list[0]
 
     # main loop
     def main_loop(self, sample_rate, audio_as_int_array):
-        print(self.game_state_list[0])
-        if self.game_state_list[0] in [STATE_LISTEN, STATE_PLAY, STATE_RECORD]:
-            self.trigger_listening(audio_as_int_array)
+        if self.game_state_list[0] in [STATE_LISTEN]:
+            self.audio_chunk_buffer = np.append(self.audio_chunk_buffer, audio_as_int_array)
+            if len(self.audio_chunk_buffer) > CHUNK_SAMPLES:
+                self.trigger_listening(self.audio_chunk_buffer)
+                self.audio_chunk_buffer = np.zeros(0, dtype='int16')
         if self.game_state_list[0] == STATE_RECORD:
             self.audio_logic.save_to_file(sample_rate, audio_as_int_array)
         if self.game_state_list[0] == STATE_PLAY:
@@ -91,8 +95,8 @@ class GamePlay(metaclass=Singleton):
         self.photo_logic.face_recognition(width, height, photo, isfinish)
 
     # trigger word detection
-    def trigger_listening(self, audio_as_int_array):
-        self.audio_buffer = np.append(self.audio_buffer, audio_as_int_array)
+    def trigger_listening(self, audio_chunk):
+        self.audio_buffer = np.append(self.audio_buffer, audio_chunk)
         if len(self.audio_buffer) > FEED_SAMPLES:
             self.audio_buffer = self.audio_buffer[-FEED_SAMPLES:]
             self.audio_logic.audio_queue.put(self.audio_buffer)
@@ -125,9 +129,10 @@ class GamePlay(metaclass=Singleton):
                 self.photo_index = self.photo_index + 1
                 photo_as_int_array = np.frombuffer(self.photo_buffer, 'uint8')
                 self.photo_buffer = b""
-                self.face_recognition_logic(self.photo_width, self.photo_height, photo_as_int_array, self.photo_index == self.photo_num)
+                print("self.photo_index", self.photo_index)
+                print("self.photo_num", self.photo_num)
+                self.face_recognition_logic(self.photo_width, self.photo_height, photo_as_int_array, self.photo_index >= self.photo_num)
         else:
             # audio
             audio_as_int_array = np.frombuffer(msg, 'i2')
-            # print(audio_as_int_array)
             self.main_loop(self.sample_rate, audio_as_int_array)

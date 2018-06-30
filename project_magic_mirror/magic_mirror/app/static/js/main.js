@@ -10,11 +10,12 @@ var constraints = {
     audio: true,
     video: true
 };
+localStorage.setItem("constraints.audio", constraints.audio);  
 
 var sampleRate = 44100;
 var recording = false;
 var photos = [];
-var photoNum = 1;
+var photoNum = 5;
 var snapshotTimer;
 var audioStream;
 var videoStream;
