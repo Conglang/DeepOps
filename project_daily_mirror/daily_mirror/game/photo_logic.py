@@ -8,10 +8,11 @@ import imageio
 from database import dbop
 
 class PhotoLogic():
-
-    def __init__(self, game_state_list, player_id_list):
+    def __init__(self, game_state_list, player_id_list, audio_file_list):
         self.game_state_list = game_state_list
         self.player_id_list = player_id_list
+        self.audio_file_list = audio_file_list
+        self.audio_file_list[0] = ""
         self.player_id_list[0] = INVALID_USER
         self.fr_who = whoisit.FRWhoIsIt()
 
@@ -19,6 +20,12 @@ class PhotoLogic():
         if self.game_state_list[0] != state:
             self.game_state_list[0] = state
             print("change game state to: ", state, "by ", desc)
+            if state == STATE_LISTEN:
+                play_chime(self.audio_file_list)
+            if state == STATE_RECORD:
+                play_click(self.audio_file_list)
+            if state == STATE_SHUTDOWN:
+                play_finish(self.audio_file_list)
 
     def resize_screenshot(self, source_path, dest_path):
         image = Image.open(source_path)

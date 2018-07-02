@@ -7,6 +7,7 @@ import numpy as np
 from queue import Queue
 from trigger_word_detection import triggerword
 from constants import *
+from shutil import copyfile
 
 class AudioLogic():
     def __init__(self, game_state_list, player_id_list, audio_file_list):
@@ -36,8 +37,8 @@ class AudioLogic():
         self.start_detection()
 
     def timer_listen(self):
-        self.set_game_state(STATE_LISTEN, "timer_listen")
         self.stop_play_audio()
+        self.set_game_state(STATE_LISTEN, "timer_listen")
         to_shutdown = Timer(5, self.timer_shutdown)
         to_shutdown.start()
         self.to_shutdown = to_shutdown
@@ -55,6 +56,12 @@ class AudioLogic():
         if self.game_state_list[0] != state:
             self.game_state_list[0] = state
             print("change game state to: ", state, "by ", desc)
+            if state == STATE_LISTEN:
+                play_chime(self.audio_file_list)
+            if state == STATE_RECORD:
+                play_click(self.audio_file_list)
+            if state == STATE_SHUTDOWN:
+                play_finish(self.audio_file_list)
 
     def trigger_listening(self):
         while self.audio_queue.not_empty:
@@ -111,7 +118,8 @@ class AudioLogic():
             return
         dest_name = str(time.time()) + ".wav"
         dest_file = os.path.join(RESOURCE_SERVER_SOUND_PATH, dest_name)
-        os.rename(sound_files[-1], dest_file)
+        copyfile(sound_files[-1], dest_file)
+        # os.rename(sound_files[-1], dest_file)
         self.audio_file_list[0] = os.path.join(RESOURCE_CLIENT_SOUND_PATH, dest_name)
         to_listen = Timer(10, self.timer_listen)
         to_listen.start()

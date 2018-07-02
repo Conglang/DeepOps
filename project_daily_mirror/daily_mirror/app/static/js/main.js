@@ -5,6 +5,7 @@ var video = window.video = document.querySelector('video');
 var canvas = window.canvas = document.querySelector('canvas');
 canvas.width = 480;
 canvas.height = 360;
+canvas.style.display="none";
 
 var constraints = {
     audio: true,

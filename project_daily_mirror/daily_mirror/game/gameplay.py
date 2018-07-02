@@ -41,9 +41,6 @@ class GamePlay(metaclass=Singleton):
         self.daemon = True
         self.cancelled = False
 
-        # self.ws = None
-
-        print("a game play instance. -----------------------")
         # global variables
         self.game_state_list = [STATE_SHUTDOWN]
         self.player_id_list = [INVALID_USER]
@@ -54,8 +51,8 @@ class GamePlay(metaclass=Singleton):
         self.reset_states()
 
         # instances
-        self.photo_logic = PhotoLogic(self.game_state_list, self.player_id_list)
-        self.audio_logic = AudioLogic(self.game_state_list, self.player_id_list, self.audio_file_list) # todo
+        self.photo_logic = PhotoLogic(self.game_state_list, self.player_id_list, self.audio_file_list)
+        self.audio_logic = AudioLogic(self.game_state_list, self.player_id_list, self.audio_file_list)
     
     def reset_states(self):
         self.pre_msg_count = 0
