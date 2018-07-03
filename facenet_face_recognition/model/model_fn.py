@@ -4,7 +4,8 @@ import tensorflow as tf
 
 from model.triplet_loss import batch_all_triplet_loss
 from model.triplet_loss import batch_hard_triplet_loss
-from model.inception_blocks_v2_250 import faceRecoModel
+from model.inception_blocks_v2_96 import faceRecoModel
+from keras.models import load_model
 
 
 def build_model(is_training, images, params):
@@ -32,7 +33,14 @@ def build_model(is_training, images, params):
     #             out = tf.layers.batch_normalization(out, momentum=bn_momentum, training=is_training)
     #         out = tf.nn.relu(out)
     #         out = tf.layers.max_pooling2d(out, 2, 2)
+    #model = faceRecoModel(out.get_shape())
     out = faceRecoModel(out)
+    print("out", out.get_shape()) 
+    # out = tf.transpose(out, [1, 2, 0])
+    # print("out", out.get_shape()) 
+    #model.load_weights('my_model_weights.h5', by_name=True)
+    
+    # out = load_model("./data/nn4.small2.v7.h5")  # load 96x96
     #assert out.shape[1:] == [7, 7, num_channels * 2]
 
     #out = tf.reshape(out, [-1, 7 * 7 * num_channels * 2])

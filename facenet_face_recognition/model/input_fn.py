@@ -102,7 +102,6 @@ def input_fn(is_training, filenames, labels, params):
             .map(parse_fn, num_parallel_calls=params.num_parallel_calls)
             .map(train_fn, num_parallel_calls=params.num_parallel_calls)
             .map(gray_fn, num_parallel_calls=params.num_parallel_calls)
-            .shuffle(num_samples)
             .repeat(params.num_epochs)
             .batch(params.batch_size)
             .prefetch(1)  # make sure you always have one batch ready to serve

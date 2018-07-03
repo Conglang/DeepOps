@@ -67,7 +67,7 @@ def inception_block_1b(X):
     X_pool = Conv2D(64, (1, 1), name='inception_3b_pool_conv')(X_pool)
     X_pool = BatchNormalization(axis=-1, epsilon=0.00001, name='inception_3b_pool_bn')(X_pool)
     X_pool = Activation('relu')(X_pool)
-    X_pool = ZeroPadding2D(padding=((11, 10), (11, 10)))(X_pool)
+    X_pool = ZeroPadding2D(padding=((4, 4), (4, 4)))(X_pool)
 
     X_1x1 = Conv2D(64, (1, 1), name='inception_3b_1x1_conv')(X)
     X_1x1 = BatchNormalization(axis=-1, epsilon=0.00001, name='inception_3b_1x1_bn')(X_1x1)
@@ -126,7 +126,7 @@ def inception_block_2a(X):
                            layer='inception_4a_pool',
                            cv1_out=128,
                            cv1_filter=(1, 1),
-                           padding=((6, 5),(6, 5)))
+                           padding=((2, 2),(2, 2)))
     X_1x1 = fr_utils.conv2d_bn(X,
                            layer='inception_4a_1x1',
                            cv1_out=256,
@@ -175,7 +175,7 @@ def inception_block_3a(X):
                            layer='inception_5a_pool',
                            cv1_out=96,
                            cv1_filter=(1, 1),
-                           padding=(3, 3))
+                           padding=(1, 1))
     X_1x1 = fr_utils.conv2d_bn(X,
                            layer='inception_5a_1x1',
                            cv1_out=256,
@@ -199,7 +199,7 @@ def inception_block_3b(X):
                            layer='inception_5b_pool',
                            cv1_out=96,
                            cv1_filter=(1, 1))
-    X_pool = ZeroPadding2D(padding=((3, 2),(3, 2)))(X_pool)
+    X_pool = ZeroPadding2D(padding=((1, 1),(1, 1)))(X_pool)
 
     X_1x1 = fr_utils.conv2d_bn(X,
                            layer='inception_5b_1x1',
@@ -297,6 +297,7 @@ def faceRecoModel(X_input):
     # X = ZeroPadding2D((111, 111))(X_input)
     # X = Conv2D(3, (1, 1), strides = (1, 1),padding = 'same', name = 'test1')(X)
     
+    print("before", K.int_shape(X_input))
     # First Block
     X = Conv2D(64, (7, 7), strides = (2, 2), name = 'conv1')(X_input)
     X = BatchNormalization(axis = 1, name = 'bn1')(X)

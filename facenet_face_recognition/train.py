@@ -14,7 +14,7 @@ from model.utils import Params
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_dir', default='experiments/base_model',
                     help="Experiment directory containing params.json")
-parser.add_argument('--data_dir', default='data/250x250_CASIA',
+parser.add_argument('--data_dir', default='data/96x96_CASIA',
                     help="Directory containing the dataset")
 
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     # Define the model
     tf.logging.info("Creating the model...")
-    config = tf.estimator.RunConfig(tf_random_seed=230,
+    config = tf.estimator.RunConfig(tf_random_seed=629,
                                     model_dir=args.model_dir,
                                     save_summary_steps=params.save_summary_steps)
     estimator = tf.estimator.Estimator(model_fn, params=params, config=config)

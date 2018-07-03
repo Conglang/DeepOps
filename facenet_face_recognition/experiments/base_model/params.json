@@ -1,20 +1,21 @@
 {
-    "learning_rate": 1e-3,
-    "batch_size": 64,
-    "num_epochs": 20,
+    "learning_rate": 1e-2,
+    "batch_size": 128,
+    "num_epochs": 1,
 
     "margin": 0.5,
     "embedding_size": 128,
-    "triplet_strategy": "batch_all",
+    "triplet_strategy": "batch_hard",
     "squared": false,
     "dropout_keep_prob":0.75,
 
-    "image_size": 250,
-    "train_size": 50000,
+    "image_size": 96,
+    "train_size": 500000,
     "test_size": 10000,
 
-    "num_parallel_calls": 4,
+    "num_parallel_calls": 5,
     "save_summary_steps": 50,
 
-    "use_random_flip": true
+    "use_random_flip": true,
+    "verify_score": 0.1
 }

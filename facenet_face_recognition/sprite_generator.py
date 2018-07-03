@@ -8,6 +8,7 @@ import os, math
 def make_sprite(filenames, destpath):
     number = len(filenames)
     max_frames_row = math.ceil(math.sqrt(number))
+    print("max_frames_row", max_frames_row)
     frames = []
     tile_width = 0
     tile_height = 0
@@ -19,12 +20,15 @@ def make_sprite(filenames, destpath):
     for current_file in filenames :
         try:
             with Image.open(current_file) as im :
-                frames.append(im.getdata())
+                img = im.resize((96,96), resample=0)
+                frames.append(img.getdata())
         except:
             print(current_file + " is not a valid image")
 
     tile_width = frames[0].size[0]
     tile_height = frames[0].size[1]
+    print("tile_width", tile_width)
+    print("tile_height", tile_height)
 
     if len(frames) > max_frames_row :
         spritesheet_width = tile_width * max_frames_row
@@ -34,10 +38,10 @@ def make_sprite(filenames, destpath):
         spritesheet_width = tile_width*len(frames)
         spritesheet_height = tile_height
         
-    print(spritesheet_height)
-    print(spritesheet_width)
+    print("spritesheet_height", spritesheet_height)
+    print("spritesheet_height", spritesheet_width)
 
-    spritesheet = Image.new("RGBA",(int(spritesheet_width), int(spritesheet_height)))
+    spritesheet = Image.new("LA",(int(spritesheet_width), int(spritesheet_height)))
 
     for current_frame in frames :
         top = tile_height * math.floor((frames.index(current_frame))/max_frames_row)
@@ -48,6 +52,7 @@ def make_sprite(filenames, destpath):
         box = (left,top,right,bottom)
         box = [int(i) for i in box]
         cut_frame = current_frame.crop((0,0,tile_width,tile_height))
+        cut_frame = cut_frame.convert('LA')
         
         spritesheet.paste(cut_frame, box)
         
