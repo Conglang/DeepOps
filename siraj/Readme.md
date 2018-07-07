@@ -25,7 +25,14 @@ Ref: https://www.kaggle.com/artimous/d/usgs/earthquake-database/visualizing-eart
 
 > The challenge for this video is to build a neural network to predict the magnitude of an Earthquake given the date, time, Latitude, and Longitude as features. [This](https://www.kaggle.com/usgs/earthquake-database) is the dataset. Optimize at least 1 hyperparameter using Random Search. See [this](http://scikit-learn.org/stable/auto_examples/model_selection/randomized_search.html) example for more information.
 
-## Op5_predict_dating_match_numpy_only
+## Op5_predict_dating_match(Unfinished)
 Code Challenge for [How to Make Data Amazing](https://www.youtube.com/watch?v=koiTTim4M-s&list=PL2-dafEMk2A7YdKv4XfKpfbTH5z6rEEj3&index=9).
 
 > The coding challenge for this video is to use [this](https://www.kaggle.com/annavictoria/speed-dating-experiment) speed dating dataset to predict if someone gets a match or not. This dataset is labeled so 1 means they got a match and 0 means they didn't. Build a neural network capable of predicting a match given a new person. You can use any library you like, bonus points if you do this from scratch using only numpy.
+
+## Op6_image_classifier_for_animal
+Code Challenge for [How to Make an Image Classifier](https://www.youtube.com/watch?v=cAICT4Al5Ow&index=11&list=PL2-dafEMk2A7YdKv4XfKpfbTH5z6rEEj3).
+
+> The challenge for this video is to build an image classifer for 2 different animals. They can be any 2 animals. [Data](https://www.kaggle.com/c/dogs-vs-cats/data).You can use Keras & Tensorflow. Bonus points if you do one or both of the following.
+1.Use only Tensorflow
+2.You use transfer learning to improve your model.
